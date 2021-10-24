@@ -1,9 +1,9 @@
 import React from 'react';
 
 class Album extends React.Component {
-  constructor() {
-    super();
-  }
+  // constructor() {
+  //   super();
+  // }
 
   render() {
     return (
