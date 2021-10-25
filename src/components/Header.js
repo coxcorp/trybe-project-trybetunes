@@ -1,20 +1,44 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getUser } from '../services/userAPI';
+import Loading from './Loading';
 
 class Header extends React.Component {
-  // constructor() {
-  //   super();
-  // }
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      userName: '',
+      loading: true,
+    };
+  }
+
+  componentDidMount() {
+    getUser()
+      .then((response) => this.setState({
+        userName: response.name,
+        loading: false,
+      }));
+  }
+
+  renderUserName() {
+    const { userName } = this.state;
+    return (
+      <span data-testid="header-user-name">{ userName }</span>
+    );
+  }
 
   render() {
+    const { loading } = this.state;
     return (
-      <div>
+      <header data-testid="header-component">
         <nav>
           <Link to="/search">Pesquisa</Link>
           <Link to="/favorites">Favoritas</Link>
           <Link to="/profile">Perfil</Link>
         </nav>
-      </div>
+        { loading ? <Loading /> : this.renderUserName() }
+      </header>
     );
   }
 }

@@ -23,7 +23,7 @@ class Content extends React.Component {
           <Route path="/profile" component={ Profile } />
           <Route path="/profile/edit" component={ ProfileEdit } />
           <Route path="/search" component={ Search } />
-          <Route path="/*" component={ NotFound } />
+          <Route path="*" component={ NotFound } />
         </Switch>
       </main>
     );

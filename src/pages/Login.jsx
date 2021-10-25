@@ -17,7 +17,6 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleUser = this.handleUser.bind(this);
     this.renderLogin = this.renderLogin.bind(this);
-    this.renderLoading = this.renderLoading.bind(this);
   }
 
   handleChange({ target }) {
@@ -76,19 +75,13 @@ class Login extends React.Component {
     );
   }
 
-  renderLoading() {
-    return (
-      <span>Carregando...</span>
-    );
-  }
-
   render() {
     const { redirect, loading } = this.state;
 
     return (
       <div>
         { loading ? <Loading /> : this.renderLogin() }
-        {redirect && <Redirect to="/search" />}
+        { redirect && <Redirect to="/search" /> }
       </div>
     );
   }
