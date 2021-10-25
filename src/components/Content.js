@@ -20,7 +20,7 @@ class Content extends React.Component {
           <Route path="/album/:id" component={ Album } />
           <Route path="/favorites" component={ Favorites } />
           <Route exact path="/" component={ Login } />
-          <Route path="/profile" component={ Profile } />
+          <Route exact path="/profile" component={ Profile } />
           <Route path="/profile/edit" component={ ProfileEdit } />
           <Route path="/search" component={ Search } />
           <Route path="*" component={ NotFound } />
