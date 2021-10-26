@@ -44,11 +44,11 @@ class Search extends React.Component {
       loading: true,
     }, async () => {
       const { searchItem } = this.state;
-      const resultado = await searchAlbumsAPI(searchItem);
-      if (resultado.length) {
+      const results = await searchAlbumsAPI(searchItem);
+      if (results.length) {
         this.setState({
           artist: searchItem,
-          searchResults: resultado,
+          searchResults: results,
         });
       } else {
         this.setState({
