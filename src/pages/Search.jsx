@@ -1,4 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Loading from '../components/Loading';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
 
 class Search extends React.Component {
   constructor(props) {
@@ -7,10 +10,16 @@ class Search extends React.Component {
     this.state = {
       searchItem: '',
       isSaveButtonDisabled: true,
+      loading: false,
+      searchResults: [],
+      notFound: false,
+      artist: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.searchForm = this.searchForm.bind(this);
+    this.renderSearchForm = this.renderSearchForm.bind(this);
+    this.renderNotFound = this.renderNotFound.bind(this);
+    this.searchArtist = this.searchArtist.bind(this);
   }
 
   handleChange({ target }) {
@@ -29,7 +38,33 @@ class Search extends React.Component {
     });
   }
 
-  searchForm() {
+  searchArtist = (event) => {
+    event.preventDefault();
+    this.setState({
+      loading: true,
+    }, async () => {
+      const { searchItem } = this.state;
+      const resultado = await searchAlbumsAPI(searchItem);
+      if (resultado.length) {
+        this.setState({
+          artist: searchItem,
+          searchResults: resultado,
+        });
+      } else {
+        this.setState({
+          notFound: true,
+          artist: false,
+          searchResults: false });
+      }
+      this.setState({
+        searchItem: '',
+        loading: false,
+
+      });
+    });
+  }
+
+  renderSearchForm() {
     const { isSaveButtonDisabled, searchItem } = this.state;
     return (
       <div>
@@ -46,7 +81,7 @@ class Search extends React.Component {
             data-testid="search-artist-button"
             type="submit"
             disabled={ isSaveButtonDisabled }
-            // onClick={ this.handleUser }
+            onClick={ this.searchArtist }
           >
             Pesquisar
 
@@ -56,10 +91,39 @@ class Search extends React.Component {
     );
   }
 
+  renderResults() {
+    const { searchResults, artist, notFound } = this.state;
+    return (
+      <div>
+        { (artist) && <p>{`Resultado de álbuns de: ${artist}`}</p> }
+        { (searchResults) && searchResults
+          .map(({ collectionId, collectionName, artistName, artworkUrl100 }) => (
+            <Link
+              to={ `/album/${collectionId}` }
+              data-testid={ `link-to-album-${collectionId}` }
+              key={ collectionId }
+            >
+              <img src={ artworkUrl100 } alt="album" />
+              <p>{ collectionName }</p>
+              <p>{ artistName }</p>
+            </Link>))}
+        { (notFound) && this.renderNotFound() }
+      </div>
+    );
+  }
+
+  renderNotFound() {
+    return (
+      <span>Nenhum álbum foi encontrado</span>
+    );
+  }
+
   render() {
+    const { loading } = this.state;
     return (
       <div data-testid="page-search">
-        { this.searchForm() }
+        { this.renderSearchForm() }
+        { loading ? <Loading /> : this.renderResults() }
       </div>
     );
   }
