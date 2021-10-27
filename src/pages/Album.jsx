@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Loading from '../components/Loading';
 import MusicCard from '../components/MusicCard';
 import getMusics from '../services/musicsAPI';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 // Fonte: https://github.com/tryber/sd-015-a-project-trybetunes/pull/4/files
 class Album extends React.Component {
@@ -12,6 +13,7 @@ class Album extends React.Component {
     this.state = {
       artist: [],
       tracks: [],
+      favorites: [],
       loading: true,
     };
 
@@ -25,6 +27,7 @@ class Album extends React.Component {
 
   requestAlbumMusic = async () => {
     const { match: { params: { id } } } = this.props;
+    const saved = await getFavoriteSongs();
     await getMusics(id)
       .then((result) => {
         this.setState({
@@ -33,12 +36,13 @@ class Album extends React.Component {
           // Demais objetos do array results
           tracks: result.slice(1),
           loading: false,
+          favorites: saved,
         });
       });
   }
 
   renderAlbum() {
-    const { artist, tracks } = this.state;
+    const { artist, tracks, favorites } = this.state;
     return (
       <div>
         <p>Album</p>
@@ -52,6 +56,7 @@ class Album extends React.Component {
             trackName={ trackName }
             previewUrl={ previewUrl }
             trackId={ trackId }
+            favorites={ favorites }
           />
         ))}
       </div>
